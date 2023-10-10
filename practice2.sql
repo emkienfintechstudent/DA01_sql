@@ -35,3 +35,11 @@ order by rating desc
 --ex10
 select teacher_id,count(distinct subject_id) as cnt  from Teacher 
 group by teacher_id
+--ex11
+select distinct user_id, count(follower_id) as followers_count from Followers 
+group by user_id
+order by user_id 
+--ex12 
+select class from Courses 
+group by class
+having count(student) >= 5
