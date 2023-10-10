@@ -29,3 +29,9 @@ where total_sales - cogs <=0
 group by manufacturer
 ORDER BY total_loss desc
 --ex9
+Select * from Cinema
+where description != 'boring' and id %2 !=0
+order by rating desc
+--ex10
+select teacher_id,count(distinct subject_id) as cnt  from Teacher 
+group by teacher_id
