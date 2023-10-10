@@ -23,3 +23,9 @@ order by user_id
 SELECT card_name, max(issued_amount) - min(issued_amount) as diffirent from monthly_cards_issued
 group by card_name 
 order by max(issued_amount) - min(issued_amount) desc
+--ex8
+select manufacturer, count(drug) as drug_count , abs(SUM(total_sales - cogs)) as total_loss from pharmacy_sales
+where total_sales - cogs <=0
+group by manufacturer
+ORDER BY total_loss desc
+--ex9
