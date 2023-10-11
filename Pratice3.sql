@@ -27,5 +27,13 @@ where length(content) >15
 select activity_date as day, count(distinct user_id) as active_users from Activity
 where activity_date between '2019-06-28' and '2019-07-27'
 group by activity_date 
-
+--ex8
+select count(joining_date) from employees
+where extract(month from joining_date) between 1 and 7
+--ex9
+select position('a' in first_name) from worker
+where first_name = 'Amitah'
+--ex10
+select id,substring(title,length(winery)+2,4) from winemag_p2
+where country ='Macedonia'
 
