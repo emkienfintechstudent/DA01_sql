@@ -29,5 +29,32 @@ SELECT age_bucket,
 FROM activities AS ac
 JOIN age_breakdown AS ab ON ac.user_id = ab.user_id
 GROUP BY ab.age_bucket
---EX4
-
+--ex4
+SELECT customer_id FROM customer_contracts as a 
+inner join 
+products as b on a.product_id = b.product_id
+GROUP BY customer_id
+having count(distinct b.product_category) = 3
+	
+--EX5
+SELECT a.employee_id
+	,a.name
+	,count(b.reports_to) AS reports_count
+	,round(avg(b.age)) AS average_age
+FROM Employees AS a
+INNER JOIN Employees AS b ON a.employee_id = b.reports_to
+GROUP BY a.employee_id
+	,a.name
+ORDER BY a.employee_id
+--ex6 
+select a. product_name,sum(b.unit) as unit from  Products as a inner join Orders as b 
+on a.product_id = b.product_id 
+where b.order_date between '2020-02-01' and '2020-02-29'
+ group by a.product_name
+ having sum(b.unit)>=100
+ order by sum(b.unit) desc
+--ex7 
+SELECT p.page_id FROM pages as p LEFT JOIN page_likes as pl 
+on p.page_id = pl.page_id
+where pl.user_id is null
+order by p.page_id
