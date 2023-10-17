@@ -93,3 +93,22 @@ SELECT (
 	,count(*) AS monthly_active_users
 FROM user_active_current_month AS a
 JOIN user_active_before_month AS b ON a.user_id = b.user_id
+	
+ /*--------------------------------------------------------EX6--------------------------------------------------------------------------*/ 
+
+WITH min_year
+AS (
+	SELECT product_id
+		,min(year) AS minyear
+	FROM Sales
+	GROUP BY product_id
+	)
+SELECT a.product_id
+	,a.year AS first_year
+	,a.quantity
+	,a.price
+FROM Sales AS a
+JOIN min_year AS b ON a.product_id = b.product_id
+WHERE b.minyear = a.year
+
+
