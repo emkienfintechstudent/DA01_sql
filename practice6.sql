@@ -106,7 +106,15 @@ FROM user_active_current_month AS a
 JOIN user_active_before_month AS b ON a.user_id = b.user_id
  /*--------------------------------------------------------EX6--------------------------------------------------------------------------*/ 
 	
-	
+	select  DATE_FORMAT(trans_date, '%Y-%m') AS month,
+country, count(*) as  trans_count ,
+sum( case when state ='approved 'then 1 else 0 end) as approved_count,
+sum( amount) as trans_total_amount,
+sum( case when state ='approved 'then amount else 0 end) as approved_total_amount 
+from Transactions
+group by month,
+country 
+
  /*--------------------------------------------------------EX7--------------------------------------------------------------------------*/ 
 
 WITH min_year
