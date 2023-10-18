@@ -46,6 +46,17 @@ UNION ALL
 SELECT *
 FROM total_spend2
 	--nối 2 bảng lại với nhau
+/*--------------------------------------------------------EX3--------------------------------------------------------------------------*/	
+	WITH cte
+AS (
+	SELECT policy_holder_id
+		,count(*)
+	FROM callers
+	GROUP BY policy_holder_id
+	HAVING count(*) >= 3
+	)
+SELECT count(*)
+FROM cte
 /*--------------------------------------------------------EX4--------------------------------------------------------------------------*/
 SELECT p.page_id
 FROM pages AS p
@@ -93,6 +104,8 @@ SELECT (
 	,count(*) AS monthly_active_users
 FROM user_active_current_month AS a
 JOIN user_active_before_month AS b ON a.user_id = b.user_id
+ /*--------------------------------------------------------EX6--------------------------------------------------------------------------*/ 
+	
 	
  /*--------------------------------------------------------EX7--------------------------------------------------------------------------*/ 
 
