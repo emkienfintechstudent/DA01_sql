@@ -119,4 +119,42 @@ as sum  from cte))
 
 select visited_on,sum as amount, round(sum/7::decimal,2) as average_amount from cte1
 where sum is not null
+-------------------------------------------------------------------------------- EX5--------------------------------------------------------------------------------
+-- đến tiv_2015 và lat + lon
+WITH cte AS (
+  SELECT tiv_2015, tiv_2016, CONCAT(lat, lon) AS location, 
+  COUNT(*) OVER (PARTITION BY CONCAT(lat, lon)) AS location_count,
+  count(tiv_2015) over(partition by tiv_2015) as count_tiv_2015
+  FROM Insurance
+)
+-- lọc ra tiv_2016 dựa trên số tiv_2015 >1 và số lat + lon =1
+SELECT ROUND(SUM(total)::decimal, 2) AS tiv_2016
+FROM ( 
+  SELECT tiv_2015, sum(tiv_2016) AS total
+  FROM cte
+  WHERE location_count = 1 and count_tiv_2015 >1
+   group by tiv_2015
+)
+-------------------------------------------------------------------------------- EX6--------------------------------------------------------------------------------
+with cte as (select a.id, 
+a.name,
+a.salary,
+a.departmentId,
+b.name as department,
+dense_rank() over(partition by departmentId order by salary desc) as rank1 
+from Employee as a  join Department as b 
+on a.departmentId = b.id )
 
+select department,name as Employee ,salary from cte 
+where rank1 <=3
+-------------------------------------------------------------------------------- EX7--------------------------------------------------------------------------------
+-- Tính tổng trọng lượng tuần tự theo người lên xe
+with cte as (select person_name,
+sum (weight) over(order by turn)  
+from Queue)
+-- lấy tất cả các người tính để khi khối lượng còn trụ được 1 tấn, --rồi sắp xếp ngược lại sau đó lấy người đầu tiên
+select person_name from cte
+where sum <=1000
+order by sum desc 
+ limit 1
+-------------------------------------------------------------------------------- EX8--------------------------------------------------------------------------------
