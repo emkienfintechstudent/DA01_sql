@@ -101,7 +101,22 @@ SELECT id
 		END
 FROM cte1
 -------------------------------------------------------------------------------- EX4 --------------------------------------------------------------------------------
--- lấy ra tổng số tiền tính đến ngày hiện tại
+-- em gộp tổng amount của ngày bằng group by dã 
+with cte as ( 
+select visited_on, sum(amount) as amount from Customer
+group by visited_on
+order by visited_on),
+-- ngồi mãi ko nghĩ ra cách nào nên em chơi kiểu công nhân ạ, là cộng luôn từ 7 ngày trước đến ngày hiện --tại
+cte1 as (
+(select visited_on, amount 
++ lag(amount,6) over(order by visited_on)
++lag(amount,5) over(order by visited_on) 
++lag(amount,4) over(order by visited_on) 
++lag(amount,3) over(order by visited_on)
++lag(amount,2) over(order by visited_on)
++lag(amount,1) over(order by visited_on)
+as sum  from cte))
 
-select customer_id,name,visited_on, sum(amount) over(order by visited_on ) from Customer
--- lấy ra các ngày từ ngày đầu tiên trở đi 
+select visited_on,sum as amount, round(sum/7::decimal,2) as average_amount from cte1
+where sum is not null
+
