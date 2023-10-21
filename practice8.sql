@@ -158,3 +158,23 @@ where sum <=1000
 order by sum desc 
  limit 1
 -------------------------------------------------------------------------------- EX8--------------------------------------------------------------------------------
+-- Rút danh sách các sản phẩm thay đổi trước hoặc bằng ngày 16-8
+-- sau đó lấy hết sản phẩm top1 theo thứ tự từ 16-8 trở về trước 
+with cte as (
+select product_id,new_price,change_date,
+rank() over(partition by product_id order by change_date desc) from Products 
+where change_date <= '2019-08-16'
+),
+--lấy danh sách tất cả sản phẩm 
+cte2 as (
+select product_id from Products 
+group by product_id),
+-- lấy các sản phẩm thay đổi gần 16-8 nhất 
+cte3 as ( 
+select * from cte 
+where rank =1)
+/* join 2 bảng lấy cái bảng trước 16-8 làm gốc để xem có sản phẩm nào không trong 16-08 không, nếu có thì in ra 10 */
+select cte2.product_id ,
+case when cte3.new_price is null then '10'
+else cte3.new_price end as price 
+ from cte3 right join cte2 on cte3.product_id=cte2.product_id
