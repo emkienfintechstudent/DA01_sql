@@ -109,25 +109,33 @@ where DATE(created_at) BETWEEN '2022-02-15' AND '2022-04-15'
 group by 1,2
 order by 1
 
-
--- lấy ra những dữ liệu cần thiết, và đầu kì của mỗi danh mục
-with cte as  (select Extract(month from c.created_at)  as month, 
-Extract(year from c.created_at) as year,b.category as product_category,a.sale_price as sale,
-a.order_id,b.cost,min(c.created_at) over(partition by b.category) as min
-from 
+--------III. Tạo metric trước khi dựng dashboard
+lấy ra những dữ liệu cần thiết
+with cte as  (select c.user_id,b.category as product_category, date(c.created_at) as date ,a.sale_price as sale,
+a.order_id,b.cost from
 bigquery-public-data.thelook_ecommerce.order_items as a 
 join  bigquery-public-data.thelook_ecommerce.products as b
 on a.product_id = b.id 
 join bigquery-public-data.thelook_ecommerce.orders as c 
 on a.order_id = c.order_id),
--- tìm index
-cte2 as (
-select month,year,product_category, sale,order_id,cost, month - extract(month from min) +
-(year - extract(year from min))*12 +1 as index  from cte
-order by 2,1,7)
-select month,year, index,product_category,sum(sale) as TPV,count(order_id) as  TPO,
-round(100*(sum(sale) - lag(SUM(sale))  over(partition by product_category order by  index))/lag(SUM(sale)) over(partition by product_category order by  index),2) || '%' as Revenue_growth,
-round(100*(count(order_id) - lag(count(order_id))  over(partition by product_category order by  index))/lag(count(order_id)) over(partition by product_category order by  index),2) || '%' as Order_growth,
-sum(cost) as total_cost, sum(sale) - sum(cost) as  Total_profit,sum(sale)/ sum(cost) as Profit_to_cost_ratio
-  from cte2
-group by month,year, index,product_category
+--tìm index và ép date về 
+cte1 as 
+(select FORMAT_DATETIME('%Y-%m', date)||'-'||'01' AS month,extract(year from date) as year,product_category, sale,order_id,cost from cte)
+
+select 
+ Month,
+ year,
+product_category,
+sum(sale) as TPV,
+count(distinct order_id) as  TPO,
+
+round(100*(sum(sale) - lag(SUM(sale))  over(partition by product_category order by month)/lag(SUM(sale)) over(partition by product_category order by month)),2) || '%' as Revenue_growth,
+round(100*(count(order_id) - lag(count(order_id))  over(partition by product_category order by month)/lag(count(order_id)) over(partition by product_category order by  month)),2) || '%' as Order_growth,
+sum(cost) as total_cost,
+ sum(sale) - sum(cost) as  Total_profit,
+sum(sale)/ sum(cost) as Profit_to_cost_ratio
+  from cte1 
+  group by month ,
+year ,
+product_category
+order by product_category
