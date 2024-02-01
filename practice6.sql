@@ -46,6 +46,22 @@ UNION ALL
 SELECT *
 FROM total_spend2
 	--nối 2 bảng lại với nhau
+
+	--- cách 2 
+WITH top_product AS
+(SELECT product, SUM(spend) AS total_spend
+FROM product_spend
+WHERE EXTRACT(year FROM transaction_date) = '2022' 
+GROUP BY product
+ORDER BY total_spend DESC
+LIMIT 4)
+
+SELECT A.category, top_product.product, top_product.total_spend 
+FROM product_spend AS A
+JOIN top_product
+ON A.PRODUCT = top_product.PRODUCT
+GROUP BY A.category, top_product.product, top_product.total_spend 
+ORDER BY category, TOTAL_SPEND DESC
 /*--------------------------------------------------------EX3--------------------------------------------------------------------------*/	
 	WITH cte
 AS (
