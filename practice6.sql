@@ -165,6 +165,10 @@ HAVING count(*) = (
 		FROM Product
 		)
 ORDER BY customer_id
+	--cách 2
+	SELECT customer_id FROM customer 
+GROUP BY customer_id
+HAVING COUNT(distinct product_key ) = (SELECT count(*) FROM product)
 /*--------------------------------------------------------EX9--------------------------------------------------------------------------*/ 
 SELECT employee_id
 FROM Employees
@@ -233,7 +237,12 @@ FROM (
 GROUP BY id
 ORDER BY num DESC limit 1
 
-
+--cách 2
+WITH list AS ((SELECT requester_id AS id FROM RequestAccepted)
+UNION ALL (SELECT accepter_id FROM RequestAccepted))
+SELECT id, COUNT(id) AS num FROM list
+GROUP BY id
+ORDER BY COUNT(id) DESC LIMIT 1
 
 
 
