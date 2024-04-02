@@ -233,7 +233,18 @@ FROM (
 GROUP BY id
 ORDER BY num DESC limit 1
 
-
+-- cách 2 
+WITH a AS
+    (SELECT requester_id as id
+    FROM RequestAccepted
+    UNION ALL
+    SELECT accepter_id as id
+    FROM RequestAccepted)
+SELECT id, COUNT (*) AS NUM
+FROM a
+GROUP BY id
+ORDER BY num DESC
+LIMIT 1
 
 
 
