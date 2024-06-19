@@ -11,7 +11,14 @@ FROM (
 		,description
 	HAVING count(job_id) > 1
 	) AS a;
-
+-- cách 2 
+	select count(distinct t1.company_id) as duplicate_companies
+from job_listings t1
+join job_listings t2
+on t1.company_id = t2.company_id and
+    t1.title = t2.title and 
+    t1.description = t2.description
+where t1.job_id != t2.job_id
 
 
 /*--------------------------------------------------------EX2 --------------------------------------------------------------------------*/
