@@ -31,6 +31,13 @@ FROM cte
 GROUP BY card_name
 	,issued_amount
 ORDER BY issued_amount DESC
+
+	-- cách 2 
+	SELECT  card_name, 
+  FIRST_VALUE(issued_amount) OVER (PARTITION BY card_name ORDER BY issue_year
+				,issue_month) as amount
+FROM monthly_cards_issued
+ORDER BY amount DESC; 
 -------------------------------------------------------------------EX3----------------------------------------------------------------------------------------------------
 SELECT t.user_id
 	,t.spend
