@@ -20,6 +20,10 @@ on t1.company_id = t2.company_id and
     t1.description = t2.description
 where t1.job_id != t2.job_id
 
+-- Cách 3 
+		select 
+  count(*) - count(distinct company_id||description)
+from job_listings;
 
 /*--------------------------------------------------------EX2 --------------------------------------------------------------------------*/
 WITH total_spend1
@@ -69,6 +73,16 @@ JOIN top_product
 ON A.PRODUCT = top_product.PRODUCT
 GROUP BY A.category, top_product.product, top_product.total_spend 
 ORDER BY category, TOTAL_SPEND DESC
+
+--  cách 3: 
+	SELECT category, product, total_spend FROM (
+  SELECT category, product, sum(spend) AS total_spend,
+  DENSE_RANK() OVER (PARTITION BY category ORDER BY sum(spend) DESC) AS DenseRank
+  FROM product_spend
+  WHERE EXTRACT(YEAR FROM transaction_date) = 2022
+  GROUP BY category, product) highestproduct
+WHERE DenseRank <= 2
+
 /*--------------------------------------------------------EX3--------------------------------------------------------------------------*/	
 	WITH cte
 AS (
