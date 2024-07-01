@@ -16,6 +16,14 @@ from callers
 --ex4 
 select name from Customer 
 where referee_id != 2 or referee_id is null
+
+ -- Cách 2 
+ select
+    name
+from
+    Customer
+where
+    referee_id IS DISTINCT FROM 2;
 --ex5
 select survived, sum(case when pclass =1 then 1 else 0 end ) as first_class,
 sum(case when pclass =2 then 1 else 0 end ) as second_class,
