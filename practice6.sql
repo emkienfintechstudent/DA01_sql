@@ -22,7 +22,7 @@ where t1.job_id != t2.job_id
 
 -- Cách 3 
 		select 
-  count(*) - count(distinct company_id||description)
+  count(*) - count(distinct company_id||title||description)
 from job_listings;
 
 /*--------------------------------------------------------EX2 --------------------------------------------------------------------------*/
@@ -152,6 +152,7 @@ from Transactions
 group by month,
 country 
 
+	-- Có thể dùng LEFT(trans_date,7)  để cắt month
  /*--------------------------------------------------------EX7--------------------------------------------------------------------------*/ 
 
 WITH min_year
@@ -186,6 +187,12 @@ HAVING count(*) = (
 		FROM Product
 		)
 ORDER BY customer_id
+
+	-- cách 2 
+	SELECT customer_id
+FROM customer
+GROUP BY customer_id
+HAVING COUNT(DISTINCT product_key) = (SELECT COUNT(*) FROM product)
 /*--------------------------------------------------------EX9--------------------------------------------------------------------------*/ 
 SELECT employee_id
 FROM Employees
